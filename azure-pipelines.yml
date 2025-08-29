@@ -34,7 +34,7 @@ jobs:
       inputs:
         provider: 'azurerm'
         command: 'plan'
-        workingDirectory: '$(System.DefaultWorkingDirectory)'
+        workingDirectory: '$(System.DefaultWorkingDirectory)/parent'
         environmentServiceNameAzureRM: 'CICD_service'
 
         
