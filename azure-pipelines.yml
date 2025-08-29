@@ -21,7 +21,7 @@ jobs:
       inputs:
         provider: 'azurerm'
         command: 'init'
-        workingDirectory: '$(System.DefaultWorkingDirectory)/CICD_prac/parent/'
+        workingDirectory: '$(System.DefaultWorkingDirectory)/CICD_prac/parent'
         backendServiceArm: 'CICD_service'
         backendAzureRmResourceGroupName: 'rg1'
         backendAzureRmStorageAccountName: 'rajstg12'
