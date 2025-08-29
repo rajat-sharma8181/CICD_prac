@@ -7,12 +7,12 @@ trigger:
 pool: Agents_ka_jhund
 
 jobs:
-  - job: terraformjob
-    displayName: terraform install
-    steps:
-    - task: TerraformInstaller@1
-      inputs:
-        terraformVersion: 'latest'
+  # - job: terraformjob
+  #   displayName: terraform install
+  #   steps:
+  #   - task: TerraformInstaller@1
+  #     inputs:
+  #       terraformVersion: 'latest'
 
   - job: terraforminitjob
     displayName: terraform init
