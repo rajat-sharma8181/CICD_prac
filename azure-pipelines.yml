@@ -6,27 +6,19 @@ trigger:
 
 pool: Agents_ka_jhund
 
-jobs:
-  # - job: terraformjob
-  #   displayName: terraform install
-  #   steps:
-  #   - task: TerraformInstaller@1
-  #     inputs:
-  #       terraformVersion: 'latest'
+steps:
+- task: TerraformInstaller@1
+  inputs:
+    terraformVersion: 'latest'
 
-  - job: terraforminitjob
-    displayName: terraform init
-    steps:
-    - task: TerraformTask@5
-      inputs:
-        provider: 'azurerm'
-        command: 'init'
-        workingDirectory: '$(System.DefaultWorkingDirectory)/CICD_prac/parent'
-        backendServiceArm: 'CICD_service'
-        backendAzureRmResourceGroupName: 'rg1'
-        backendAzureRmStorageAccountName: 'rajstg12'
-        backendAzureRmContainerName: 'rajat-container'
-        backendAzureRmKey: 'rajat.tfstate'
-
+- task: TerraformTask@5
+  inputs:
+    provider: 'azurerm'
+    command: 'init'
+    backendServiceArm: 'CICD_service'
+    backendAzureRmResourceGroupName: 'rg1'
+    backendAzureRmStorageAccountName: 'rajstg12'
+    backendAzureRmContainerName: 'rajat-container'
+    backendAzureRmKey: 'pankaj.tfstate'
 
 
