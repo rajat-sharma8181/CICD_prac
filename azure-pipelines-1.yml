@@ -8,7 +8,7 @@ pool: Agents_ka_jhund
 
 jobs: 
   - job: terraformtasks
-    displayName: install init validate plan
+    # displayName: install init validate plan
     steps:
     - task: TerraformInstaller@1
       displayName: terraform install
