@@ -7,8 +7,8 @@ trigger: none
 pool: Agents_ka_jhund
 
 jobs: 
-  - job: terraformtasks
-    # displayName: install init validate plan
+  - job: installinitvalidateplan
+    displayName: install init validate plan
     steps:
     - task: TerraformInstaller@1
       displayName: terraform install
@@ -40,11 +40,11 @@ jobs:
         workingDirectory: '$(System.DefaultWorkingDirectory)/parent'
         environmentServiceNameAzureRM: 'CI_CD_service'
 
-  - job: 
+  - job: manualvalidationjob
     displayName: manual validation
     pool: server
-    dependsOn: terraformtasks
-    condition: succeeded('InitPlanValidate')  # run only if job passed
+    dependsOn: installinitvalidateplan
+    condition: succeeded('installinitvalidateplan')  # run only if job passed
     steps:
     - task: ManualValidation@1
       displayName: manual validation task
@@ -52,8 +52,8 @@ jobs:
         notifyUsers: 'rajats12120@gmail.com'
         approvers: 'rajats12120@gmail.com'
       
-  - job: 
-    displayName: initjob and applyjob
+  - job: initapplyjob
+    displayName: init and apply
     steps:
     - task: TerraformTask@5
       inputs:
