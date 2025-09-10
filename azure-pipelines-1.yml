@@ -67,6 +67,7 @@ jobs:
         backendAzureRmStorageAccountName: 'rajatstg12'
         backendAzureRmContainerName: 'rajatcont1'
         backendAzureRmKey: 'rajat.tfstate'
+        environmentServiceNameAzureRM: 'CI_CD_service'
 
     - task: TerraformTask@5
       displayName: apply
