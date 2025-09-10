@@ -6,29 +6,36 @@ trigger: none
 
 pool: Agents_ka_jhund
 
-jobs:
-  - job: 
+jobs: 
+  - job: terraformtasks
+    displayName: install init validate plan
     steps:
     - task: TerraformInstaller@1
+      displayName: terraform install
       inputs:
         terraformVersion: 'latest'
 
     - task: TerraformTask@5
+      displayName: init task
       inputs:
         provider: 'azurerm'
         command: 'init'
+        workingDirectory: '$(System.DefaultWorkingDirectory)/parent'
         backendServiceArm: 'CI_CD_service'
         backendAzureRmStorageAccountName: 'rajatstg12'
         backendAzureRmContainerName: 'rajatcont1'
-        backendAzureRmKey: 'rg.tfstate'
+        backendAzureRmKey: 'rajat.tfstate'
 
     - task: TerraformTask@5
+      displayName: validate task
       inputs:
         provider: 'azurerm'
         command: 'validate'
 
     - task: TerraformTask@5
+      displayName: plan task
       inputs:
         provider: 'azurerm'
         command: 'plan'
+        workingDirectory: '$(System.DefaultWorkingDirectory)/parent'
         environmentServiceNameAzureRM: 'CI_CD_service'
