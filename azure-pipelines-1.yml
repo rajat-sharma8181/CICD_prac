@@ -1,21 +1,26 @@
 trigger: none
-  # branches:
-  #  include:
-  #   #  - main
-  #   #  - features/*
+# - main
+# - features/*
 
-jobs: 
-  - job: installinitvalidateplanjob
-    displayName: install init validate plan
+# pool: Stream line project agent
+
+jobs:
+  - job: installerjob
     pool: Agents_ka_jhund
+    displayName: Terraform installer Job
     steps:
     - task: TerraformInstaller@1
-      displayName: terraform install
+      displayName: Terraform Install
       inputs:
         terraformVersion: 'latest'
-
+  
+  - job: initvalidateplanjob
+    pool: Agents_ka_jhund
+    dependsOn: installerjob
+    displayName: Init, Validate, Plan Job
+    steps:
     - task: TerraformTask@5
-      displayName: init task
+      displayName: Terraform init task
       inputs:
         provider: 'azurerm'
         command: 'init'
@@ -23,56 +28,53 @@ jobs:
         backendServiceArm: 'CI_CD_service'
         backendAzureRmStorageAccountName: 'rajatstg12'
         backendAzureRmContainerName: 'rajatcont1'
-        backendAzureRmKey: 'rajat.tfstate'
-
+        backendAzureRmKey: 'terraform.tfstate'
+      
     - task: TerraformTask@5
-      displayName: validate task
+      displayName: Terraform Validate Task
       inputs:
         provider: 'azurerm'
         command: 'validate'
-
+  
     - task: TerraformTask@5
-      displayName: plan task
+      displayName: Terraform Plan Task
       inputs:
         provider: 'azurerm'
         command: 'plan'
-        workingDirectory: '$(System.DefaultWorkingDirectory)/parent'
         environmentServiceNameAzureRM: 'CI_CD_service'
 
-  - job: manualvalidationjob
-    displayName: manual validation
+  - job: ManualValidation
+    displayName: Manual Validation Step
+    dependsOn: initvalidateplanjob
     pool: server
-    dependsOn: installinitvalidateplanjob
-    condition: succeeded('installinitvalidateplanjob')  # run only if job passed
     steps:
     - task: ManualValidation@1
-      displayName: manual validation task
+      displayName: Manual Approval Before Apply
       inputs:
+        instructions: 'Please review the Terraform plan and approve to continue.'
         notifyUsers: 'rajats12120@gmail.com'
         approvers: 'rajats12120@gmail.com'
-      
-  - job: initapplyjob
+
+  - job: initjobaftermanualvalidation
+    displayName: Init & Apply After Manual Approval
+    dependsOn: ManualValidation
     pool: Agents_ka_jhund
-    displayName: init and apply
-    dependsOn: manualvalidationjob
-    condition: succeeded('manualvalidationjob')
     steps:
     - task: TerraformTask@5
-      displayName: init
+      displayName: Terraform init task
       inputs:
         provider: 'azurerm'
         command: 'init'
-        workingDirectory: '$(System.DefaultWorkingDirectory)/parent'
         backendServiceArm: 'CI_CD_service'
         backendAzureRmStorageAccountName: 'rajatstg12'
         backendAzureRmContainerName: 'rajatcont1'
-        backendAzureRmKey: 'rajat.tfstate'
-        environmentServiceNameAzureRM: 'CI_CD_service'
-
+        backendAzureRmKey: 'terraform.tfstate'
+ 
+ 
     - task: TerraformTask@5
-      displayName: apply
+      displayName: Terraform Apply Task
       inputs:
         provider: 'azurerm'
         command: 'apply'
-        commandOptions: '--auto-approve'
+        commandOptions: '-auto-approve'
         environmentServiceNameAzureRM: 'CI_CD_service'
