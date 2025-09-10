@@ -7,7 +7,7 @@ trigger: none
 pool: Agents_ka_jhund
 
 jobs: 
-  - job: installinitvalidateplan
+  - job: installinitvalidateplanjob
     displayName: install init validate plan
     steps:
     - task: TerraformInstaller@1
@@ -43,8 +43,8 @@ jobs:
   - job: manualvalidationjob
     displayName: manual validation
     pool: server
-    dependsOn: installinitvalidateplan
-    condition: succeeded('installinitvalidateplan')  # run only if job passed
+    dependsOn: installinitvalidateplanjob
+    condition: succeeded('installinitvalidateplanjob')  # run only if job passed
     steps:
     - task: ManualValidation@1
       displayName: manual validation task
