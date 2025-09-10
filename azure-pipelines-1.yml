@@ -4,11 +4,10 @@ trigger: none
   #   #  - main
   #   #  - features/*
 
-pool: Agents_ka_jhund
-
 jobs: 
   - job: installinitvalidateplanjob
     displayName: install init validate plan
+    pool: Agents_ka_jhund
     steps:
     - task: TerraformInstaller@1
       displayName: terraform install
@@ -53,6 +52,7 @@ jobs:
         approvers: 'rajats12120@gmail.com'
       
   - job: initapplyjob
+    pool: Agents_ka_jhund
     displayName: init and apply
     dependsOn: manualvalidationjob
     condition: succeeded('manualvalidationjob')
