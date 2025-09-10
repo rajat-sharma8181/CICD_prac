@@ -39,3 +39,35 @@ jobs:
         command: 'plan'
         workingDirectory: '$(System.DefaultWorkingDirectory)/parent'
         environmentServiceNameAzureRM: 'CI_CD_service'
+
+  - job: 
+    displayName: manual validation
+    pool: server
+    dependsOn: terraformtasks
+    condition: succeeded('InitPlanValidate')  # run only if job passed
+    steps:
+    - task: ManualValidation@1
+      displayName: manual validation task
+      inputs:
+        notifyUsers: 'rajats12120@gmail.com'
+        approvers: 'rajats12120@gmail.com'
+      
+  - job: 
+    displayName: initjob and applyjob
+    steps:
+    - task: TerraformTask@5
+      inputs:
+        provider: 'azurerm'
+        command: 'init'
+        workingDirectory: '$(System.DefaultWorkingDirectory)/parent'
+        backendServiceArm: 'CI_CD_service'
+        backendAzureRmStorageAccountName: 'rajatstg12'
+        backendAzureRmContainerName: 'rajatcont1'
+        backendAzureRmKey: 'rajat.tfstate'
+
+    - task: TerraformTask@5
+      inputs:
+        provider: 'azurerm'
+        command: 'apply'
+        commandOptions: '--auto-approve'
+        environmentServiceNameAzureRM: 'CI_CD_service'
